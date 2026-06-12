@@ -1,0 +1,81 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: alphasight-postgres
+    restart: unless-stopped
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: alphasight
+      POSTGRES_PASSWORD: alphasight
+      POSTGRES_DB: alphasight
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U alphasight']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: alphasight-redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: alphasight-backend
+    restart: unless-stopped
+    ports:
+      - '3001:3001'
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DATABASE_URL: postgresql://alphasight:alphasight@postgres:5432/alphasight
+      REDIS_URL: redis://redis:6379
+      MANTLE_RPC_URL: https://rpc.mantle.xyz
+      MANTLE_CHAIN_ID: '5000'
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      CONTRACT_ADDRESS: ${CONTRACT_ADDRESS}
+      DEPLOYER_PRIVATE_KEY: ${DEPLOYER_PRIVATE_KEY}
+      FRONTEND_URL: http://localhost:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: alphasight-frontend
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:3001
+      NEXT_PUBLIC_WS_URL: http://localhost:3001
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  redis_data:

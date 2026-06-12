@@ -1,0 +1,13 @@
+node_modules/
+.env
+.env.local
+dist/
+.next/
+*.log
+coverage/
+artifacts/
+cache/
+typechain-types/
+.claude/
+.DS_Store
+*.tsbuildinfo

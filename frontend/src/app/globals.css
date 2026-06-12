@@ -1,0 +1,160 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: #0a0b0f;
+    color: #e8eaf0;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #111318;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #2a2e3a;
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3a3f4e;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-surface border border-border rounded-xl p-4;
+  }
+
+  .card-hover {
+    @apply card transition-all duration-200 hover:border-border-bright hover:bg-surface-2;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2 py-0.5 rounded-md text-xs font-mono font-medium;
+  }
+
+  .stat-value {
+    @apply font-mono text-2xl font-bold text-text-primary;
+  }
+
+  .stat-label {
+    @apply text-xs text-text-muted;
+  }
+
+  .section-title {
+    @apply text-sm font-medium text-text-secondary mb-4;
+  }
+
+  .terminal-text {
+    @apply font-mono text-accent-green text-sm;
+  }
+
+  .risk-indicator {
+    @apply w-2 h-2 rounded-full inline-block;
+  }
+}
+
+@layer utilities {
+  .text-gradient-green {
+    background: linear-gradient(135deg, #00ff88, #00cc6a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .glow-green {
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.2), 0 0 30px rgba(0, 255, 136, 0.1);
+  }
+
+  .glow-red {
+    box-shadow: 0 0 15px rgba(255, 68, 68, 0.2), 0 0 30px rgba(255, 68, 68, 0.1);
+  }
+
+  .scanline {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .scanline::after {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: 0;
+    right: 0;
+    height: 200%;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 255, 136, 0.015) 2px,
+      rgba(0, 255, 136, 0.015) 4px
+    );
+    pointer-events: none;
+  }
+}
+
+/* Animated background grid */
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Pulse animation for live indicators */
+@keyframes livePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.live-indicator {
+  animation: livePulse 2s ease-in-out infinite;
+}
+
+/* Signal card animation */
+@keyframes slideInRight {
+  from {
+    transform: translateX(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.slide-in {
+  animation: slideInRight 0.3s ease-out;
+}
+
+/* Score bar fill animation */
+@keyframes fillBar {
+  from { width: 0; }
+  to { width: var(--fill-width); }
+}
+
+.fill-bar {
+  animation: fillBar 0.8s ease-out forwards;
+}
