@@ -43,6 +43,7 @@ services:
     name: alphasight-redis
     plan: free
     maxmemoryPolicy: noeviction
+    ipAllowList: []
 
 databases:
   - name: alphasight-db
